@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+langchain
+langchain_groq
+python-dotenv
+faster-whisper 
+webrtcvad-wheels 
+pyaudio 
+torch 
+transformers 
+parler-tts 
+soundfile
+sqlite3 
+fastapi-sqlalchemy
+python-multipart
