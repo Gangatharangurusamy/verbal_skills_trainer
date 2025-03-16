@@ -22,7 +22,7 @@ const VoiceAnalysis: React.FC = () => {
   const audioChunksRef = useRef<BlobPart[]>([]);
 
   // User ID would typically come from authentication
-  const userId = "john-doe";
+  const userId = "ganga123";
   // Backend URL configuration
   const API_URL = "http://127.0.0.1:8000";
 

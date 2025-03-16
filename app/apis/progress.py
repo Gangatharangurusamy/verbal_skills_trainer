@@ -5,12 +5,12 @@ from app.core.database import get_user_responses
 from app.core.config import settings
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
-from app.apis.voice import generate_speech  # ✅ Reusing TTS from voice
+from app.apis.voice import generate_speech  
 
-# ✅ Initialize FastAPI Router
+# Initialize FastAPI Router
 router = APIRouter()
 
-# ✅ Initialize LLM
+# Initialize LLM Groq AI
 llm = ChatGroq(
     groq_api_key=settings.GROQ_API_KEY,
     model="llama-3.1-8b-instant",
@@ -20,7 +20,7 @@ llm = ChatGroq(
     max_retries=2
 )
 
-# ✅ Feedback Prompt Template
+# Feedback Prompt Template
 PROGRESS_PROMPT = ChatPromptTemplate.from_messages([
     ("system", "You are an expert speech coach. Based on the user's speech history, generate a detailed improvement report."),
     ("human", """
@@ -35,18 +35,18 @@ PROGRESS_PROMPT = ChatPromptTemplate.from_messages([
 
 @router.get("/progress/{user_id}")
 async def get_user_progress(user_id: str):
-    """📊 Fetches user's overall speech progress & provides AI feedback (text + speech)."""
+    """Fetches user's overall speech progress & provides AI feedback (text + speech)."""
     try:
-        # ✅ Fetch user speech assessments from the database
+        # Fetch user speech assessments from the database
         user_responses = get_user_responses(user_id)
 
-        # ✅ Debugging: Print raw database output
+        # Debugging: Print raw database output
         print(f"🔍 DEBUG - Raw user responses for {user_id}: {user_responses}")
 
         if not user_responses:
             raise HTTPException(status_code=404, detail=f"No speech data found for user: {user_id}")
 
-        # ✅ Extract & Validate Scores
+        # Extract & Validate Scores
         clarity_scores, fluency_scores, pronunciation_scores = [], [], []
 
         for response in user_responses:
@@ -67,13 +67,13 @@ async def get_user_progress(user_id: str):
         if not clarity_scores or not fluency_scores or not pronunciation_scores:
             raise HTTPException(status_code=500, detail="Database records are missing required speech scores.")
 
-        # ✅ Calculate Averages
+        # Calculate Averages
         total_sessions = len(user_responses)
         avg_clarity = round(sum(clarity_scores) / total_sessions, 2)
         avg_fluency = round(sum(fluency_scores) / total_sessions, 2)
         avg_pronunciation = round(sum(pronunciation_scores) / total_sessions, 2)
 
-        # ✅ Prepare Progress Data
+        # Prepare Progress Data
         progress_data = {
             "user_id": user_id,
             "total_sessions": total_sessions,
@@ -82,17 +82,17 @@ async def get_user_progress(user_id: str):
             "average_pronunciation_score": avg_pronunciation
         }
 
-        # ✅ Debugging: Print extracted progress data
+        # Debugging: Print extracted progress data
         print(f"🔍 DEBUG - Progress data: {progress_data}")
 
-        # ✅ Send progress data to LLM
-        messages = PROGRESS_PROMPT.format_messages(**progress_data)
+        # Send progress data to LLM
+        messages = PROGRESS_PROMPT.format_messages(progress_data)
         ai_feedback = llm.invoke(messages).content  # LLM Response
 
-        # ✅ Generate Speech from AI Feedback
+        # Generate Speech from AI Feedback
         audio_file = generate_speech(ai_feedback, output_path=f"{user_id}_progress_feedback.wav")
 
-        # ✅ Final response
+        # Final response
         return {
             "user_id": user_id,
             "total_sessions": total_sessions,
@@ -105,7 +105,7 @@ async def get_user_progress(user_id: str):
 
     except HTTPException as e:
         print(f"❌ ERROR - {e.detail}")
-        raise e  # Re-raise the error so FastAPI can return it properly
+        raise e  
 
     except Exception as e:
         print(f"❌ UNEXPECTED ERROR - {str(e)}")

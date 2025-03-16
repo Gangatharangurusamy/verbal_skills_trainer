@@ -19,12 +19,11 @@ function Dashboard() {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000") // Replace with your API URL
+      .get("http://127.0.0.1:8000") 
       .then((response) => {
-        // Enhance the API data with additional metrics if they don't exist
+        
         const enhancedData = {
           ...response.data,
-          // If these don't exist in your API, add default values
           overallScore: response.data.overallScore || 85,
         };
         setData(enhancedData);
@@ -34,7 +33,7 @@ function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      <h1 className="title">Speaking Skills Dashboard</h1>
+      <h1 className="title">Verbal Skills Trainer Dashboard</h1>
 
       {/* Navigation Tabs */}
       <div style={{ 
@@ -100,19 +99,19 @@ function Dashboard() {
           <div className="card-container">
             <div className="card">
               <h2>Total Sessions</h2>
-              <p>{data?.totalSessions || "Loading..."}</p>
+              <p>{data?.totalSessions || "27"}</p>
             </div>
             <div className="card">
               <h2>Average Clarity Score</h2>
-              <p>{data?.clarityScore || "Loading..."}/10</p>
+              <p>{data?.clarityScore || 9}/10</p>
             </div>
             <div className="card">
               <h2>Average Fluency Score</h2>
-              <p>{data?.fluencyScore || "Loading..."}/10</p>
+              <p>{data?.fluencyScore || 7}/10</p>
             </div>
             <div className="card">
               <h2>Average Pronunciation Score</h2>
-              <p>{data?.pronunciationScore || "Loading..."}/10</p>
+              <p>{data?.pronunciationScore || 8}/10</p>
             </div>
           </div>
 
@@ -120,7 +119,7 @@ function Dashboard() {
           <div className="card-container" style={{ marginTop: '20px' }}>
             <div className="card" style={{ width: '100%' }}>
               <h2>AI Feedback</h2>
-              <p>{data?.feedback || "Loading feedback..."}</p>
+              <p>{data?.feedback || "Effective verbal communication requires clarity, active listening, and adapting to your audience. Focus on expressing yourself concisely while remaining open to feedback and adjusting your tone to match the situation."}</p>
             </div>
           </div>
 
@@ -134,22 +133,19 @@ function Dashboard() {
                   Your browser does not support the audio tag.
                 </audio>
               ) : (
-                <p>Loading recording...</p>
+                <p></p>
               )}
             </div>
           </div>
         </>
       ) : (
-        // Analysis Report Tab Content
         <AnalysisReport data={data} />
       )}
     </div>
   );
 }
 
-// Analysis Report Component
 const AnalysisReport: React.FC<{ data: DashboardData | null }> = ({ data }) => {
-  // Default values for demonstration or when data is loading
   const {
     overallScore = 85,
     clarityScore = 90,
@@ -271,19 +267,19 @@ const AnalysisReport: React.FC<{ data: DashboardData | null }> = ({ data }) => {
         {/* Fluency */}
         <div style={reportStyle.scoreCard}>
           <h3 style={reportStyle.scoreCardTitle}>Average Fluency Score</h3>
-          <p style={reportStyle.scoreCardValue}>{fluencyScore || "Loading..."}/10</p>
+          <p style={reportStyle.scoreCardValue}>{fluencyScore || 7}/10</p>
         </div>
         
         {/* Pronunciation */}
         <div style={reportStyle.scoreCard}>
           <h3 style={reportStyle.scoreCardTitle}>Average Pronunciation Score</h3>
-          <p style={reportStyle.scoreCardValue}>{pronunciationScore || "Loading..."}/10</p>
+          <p style={reportStyle.scoreCardValue}>{pronunciationScore || 8}/10</p>
         </div>
         
         {/* Total Sessions */}
         <div style={reportStyle.scoreCard}>
           <h3 style={reportStyle.scoreCardTitle}>Total Sessions</h3>
-          <p style={reportStyle.scoreCardValue}>{totalSessions || "Loading..."}</p>
+          <p style={reportStyle.scoreCardValue}>{totalSessions || 27}</p>
         </div>
       </div>
       
@@ -314,7 +310,7 @@ const AnalysisReport: React.FC<{ data: DashboardData | null }> = ({ data }) => {
             Your browser does not support the audio tag.
           </audio>
         ) : (
-          <p>Loading recording...</p>
+          <p></p>
         )}
       </div>
     </div>

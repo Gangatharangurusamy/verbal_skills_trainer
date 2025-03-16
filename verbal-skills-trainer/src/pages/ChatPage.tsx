@@ -1,4 +1,3 @@
-// src/pages/ChatPage.tsx
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./ChatPage.css";
@@ -12,13 +11,28 @@ type Message = {
 type ConversationType = "job_interviewer" | "casual_friend" | "debate_opponent";
 
 const ChatPage: React.FC = () => {
+  const [conversationType, setConversationType] = useState<ConversationType>("job_interviewer");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Initial greeting based on conversation type
+  const getInitialGreeting = (type: ConversationType): string => {
+    switch (type) {
+      case "job_interviewer":
+        return "Welcome to your interview session. Could you start by telling me about your professional background?";
+      case "casual_friend":
+        return "Hey there! What's been going on with you lately?";
+      case "debate_opponent":
+        return "I'm ready to discuss any topic you'd like to debate. What subject should we explore today?";
+      default:
+        return "Hello! How can I assist you today?";
+    }
+  };
+  
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, sender: "AI", content: "Hello! How can I assist you today?" }
+    { id: 1, sender: "AI", content: getInitialGreeting("job_interviewer") }
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [conversationType, setConversationType] = useState<ConversationType>("job_interviewer");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // User ID would typically come from authentication
   const userId = "ganga123";
@@ -80,7 +94,13 @@ const ChatPage: React.FC = () => {
   };
 
   const handleConversationTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setConversationType(e.target.value as ConversationType);
+    const newType = e.target.value as ConversationType;
+    setConversationType(newType);
+    
+    // Reset the chat with a new greeting when conversation type changes
+    setMessages([
+      { id: Date.now(), sender: "AI", content: getInitialGreeting(newType) }
+    ]);
   };
 
   return (
